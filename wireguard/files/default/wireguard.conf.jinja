@@ -31,7 +31,7 @@
 {%-     endif %}
 {%-     set mined_node_pubkeys = salt['mine.get'](parts[1], 'public_wireguard_keys') %}
 {%-     if mined_node_pubkeys %}
-{%-       for line in mined_node_pubkeys.splitlines() %}
+{%-       for line in mined_node_pubkeys[parts[1]].splitlines() %}
 {#-         # 'interface public_key' #}
 {%-         set key_parts = line.split(' ') %}
 {%-         if parts[2] == key_parts[0] %}
