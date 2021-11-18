@@ -8,9 +8,15 @@
 {{ key }} = {{ value }}
 {%- endfor %}
 
+{#- Find out if we are a ClientOnlyNode ourselves #}
+{%- set ClientOnlyNode = interface_config.get('Peers', {}).get(grains['id'], {}).get('ClientOnlyNode', False) %}
 {%- for peer_name, peer in interface_config.get('Peers', {}).items() %}
 {#-   # Don't peer with ourself (by matching peer name) #}
 {%-   if peer_name == grains['id'] %}
+{%-     continue %}
+{%-   endif %}
+{#-   # Don't peer with another ClientOnlyNode if we are also a ClientOnlynode #}
+{%-   if ClientOnlyNode and peer.get('ClientOnlyNode', False) %}
 {%-     continue %}
 {%-   endif %}
 {%-   set endpoint = peer.get('Endpoint', False) %}

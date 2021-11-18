@@ -67,6 +67,7 @@ wireguard:
           PublicKey: mine:minion_id2:wg0
           AllowedIPs: 0.0.0.0/0
           Endpoint: 10.0.0.1:51820
+          ClientOnlyNode: true # When this node is only ever a client node, don't peer with anyone but the 'servers'
 
 
   # Just for testing purposes
