@@ -59,10 +59,10 @@ Domains={{ interface_config['Interface'].get('Domains') }}
 {%-     endif %}
 {%-   endif %}
 
-{%- for route in peer.get('AllowedIPs', []) %} %}
+{% for route in peer.get('AllowedIPs', []) %}
 [Route]
 Destination={{ route }}
-{%- endfor %}
+{% endfor %}
 
 
 {%- endfor %}
