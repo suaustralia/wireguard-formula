@@ -61,7 +61,6 @@ wireguard-config-file-interface-{{ interface }}-public-key:
     - makedirs: True
     - template: jinja
     - require:
-      - file: wireguard-config-file-config-dir
       - sls: {{ sls_package_install }}
     - context:
         interface: {{ interface }}
@@ -81,7 +80,6 @@ wireguard-config-file-interface-{{ interface }}-public-key:
     - makedirs: True
     - template: jinja
     - require:
-      - file: wireguard-config-file-config-dir
       - sls: {{ sls_package_install }}
     - context:
         interface: {{ interface }}
