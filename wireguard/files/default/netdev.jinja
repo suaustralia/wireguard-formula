@@ -1,0 +1,73 @@
+########################################################################
+# File managed by Salt at <{{ source }}>.
+# Your changes will be overwritten.
+########################################################################
+
+[NetDev]
+Name = {{ interface }}
+Kind = wireguard
+Description = Salt managed {{ interface }}
+
+[WireGuard]
+# If running systemd >= 242
+PrivateKeyFile = {{ private_key_file }}
+
+# If running systemd < 242
+#PrivateKey = <content of local wg-private.key>
+
+{#- Find out if we are a ClientOnlyNode ourselves #}
+{%- set ClientOnlyNode = interface_config.get('Peers', {}).get(grains['id'], {}).get('ClientOnlyNode', False) %}
+{%- for peer_name, peer in interface_config.get('Peers', {}).items() %}
+{#-   # Don't peer with ourself (by matching peer name) #}
+{%-   if peer_name == grains['id'] %}
+{%-     continue %}
+{%-   endif %}
+{#-   # Don't peer with another ClientOnlyNode if we are also a ClientOnlynode #}
+{%-   if ClientOnlyNode and peer.get('ClientOnlyNode', False) %}
+{%-     continue %}
+{%-   endif %}
+{%-   set endpoint = peer.get('Endpoint', False) %}
+{%-   if endpoint %}
+{%-     set address = endpoint.split(':')[0] %}
+{#-     # Don't peer with ourself (by matching endpoint address) #}
+{%-     if address in grains['ipv4'] or address in grains['ipv6'] %}
+{%-       continue %}
+{%-     endif %}
+{%-   endif %}
+{%-   set pubkey = peer.get('PublicKey', '') %}
+{#-   # mine:node_id:interface #}
+{%-   set parts = pubkey.split(':') %}
+{%-   if parts|length() == 3 and parts[0] == 'mine' %}
+{#-     # ignore your own pubkeys #}
+{%-     if parts[1] == grains['id'] %}
+{%-       continue %}
+{%-     endif %}
+{%-     set mined_node_pubkeys = salt['mine.get'](parts[1], 'public_wireguard_keys') %}
+{%-     if mined_node_pubkeys %}
+{%-       for line in mined_node_pubkeys[parts[1]].splitlines() %}
+{#-         # 'interface public_key' #}
+{%-         set key_parts = line.split(' ') %}
+{%-         if parts[2] == key_parts[0] %}
+{%-           do peer.update({"PublicKey": key_parts[1]}) %}
+{%-         endif %}
+{%-       endfor %}
+{%-     else %}
+{%-       continue %}
+{%-     endif %}
+{%-   endif %}
+
+
+[WireGuardPeer]
+# {{ peer_name }}
+# If running systemd >= 242
+#PresharedKeyFile = /etc/systemd/network/wg-preshared.key
+# If running systemd < 242
+#PresharedKey = <content of wg-preshared.key>
+#PersistentKeepalive = 25
+{%-   for key, value in peer.items() %}
+{%-     if value|is_list %}
+{%-       set value = value|join(',') %}
+{%-     endif %}
+{{ key }} = {{ value }}
+{%-   endfor %}
+{%- endfor %}
