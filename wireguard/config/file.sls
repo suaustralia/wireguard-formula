@@ -31,7 +31,7 @@ wireguard-config-file-interface-{{ interface }}-private-key:
     - name: wg genkey > {{ private_key }}
     - creates: {{ private_key }}
     - require_in:
-      - file: "wireguard-config-file-interface-{{ interface }}-config"
+      - file: "wireguard-config-file-interface-{{ interface }}-config-netdev"
 
 wireguard-config-file-interface-{{ interface }}-public-key:
   cmd.run:
