@@ -11,10 +11,12 @@ Name={{ interface }}
 {%- if clientAddress %}
 Address={{ clientAddress }}/32
 {%- endif %}
+# DNS Servers specific to this wiregaurd VPN
 {%- for dnsServer in interface_config['Interface'].get('DNS', []) %}
 DNS={{ dnsServer }}
 {%- endfor %}
 {%- if 'Domains' in interface_config['Interface'] %}
+# Domains to push to our DNS servers (split DNS)
 Domains={{ interface_config['Interface'].get('Domains') }}
 {%- endif %}
 
