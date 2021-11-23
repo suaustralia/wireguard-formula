@@ -4,8 +4,8 @@
 wireguard:
   pkg:
     name: wireguard
-  rootgroup: root
-  config: '/etc/wireguard'
+  rootgroup: systemd-network
+  config: '/etc/systemd/network'
   service:
     name: wireguard
   # Just here for testing

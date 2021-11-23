@@ -50,6 +50,12 @@ wireguard:
         # (together with the public key) and set it via PostUp
         # PrivateKey: PRIVATE_KEY
         ListenPort: 51820
+        # Define the client address if it's not on the routed subnets
+        Address: 192.168.200.12
+        DNS:
+          - 10.0.45.1
+          - 10.0.47.1
+        Domains: internaldomain.tech,splitdns.org
       Peers:
         # We name the peers so we can automatically exclude them
         # on the node with the same minion ID.

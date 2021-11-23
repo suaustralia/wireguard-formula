@@ -12,12 +12,6 @@ include:
 
 {%- set interfaces = wireguard.get('interfaces', {}) %}
 
-wireguard-config-file-config-dir:
-  file.directory:
-    - name: {{ wireguard.config }}
-    - user: root
-    - group: {{ wireguard.rootgroup }}
-
 {%- if interfaces|length() > 0 %}
 wireguard-config-file-mine-update:
   module.run:
@@ -33,7 +27,7 @@ wireguard-config-file-mine-update:
 {%-   if not private_key_specified %}
 wireguard-config-file-interface-{{ interface }}-private-key:
   cmd.run:
-    - umask: "077"
+    - umask: "027"
     - name: wg genkey > {{ private_key }}
     - creates: {{ private_key }}
     - require_in:
@@ -54,14 +48,14 @@ wireguard-config-file-interface-{{ interface }}-public-key:
 {%-     do config['Interface'].update({"PostUp": "{} && ({})".format(wg_set_private_key, pillar_post_up)}) %}
 {%-   endif %}
 
-"wireguard-config-file-interface-{{ interface }}-config":
+"wireguard-config-file-interface-{{ interface }}-config-netdev":
   file.managed:
-    - name: {{ wireguard.config }}/{{ interface }}.conf
-    - source: {{ files_switch(['wireguard.conf.jinja'],
+    - name: {{ wireguard.config }}/{{ interface }}.netdev
+    - source: {{ files_switch(['netdev.jinja'],
                               lookup='wireguard-config-file-interface-{}-config'.format(interface)
                  )
               }}
-    - mode: 600
+    - mode: 660
     - user: root
     - group: {{ wireguard.rootgroup }}
     - makedirs: True
@@ -70,5 +64,26 @@ wireguard-config-file-interface-{{ interface }}-public-key:
       - file: wireguard-config-file-config-dir
       - sls: {{ sls_package_install }}
     - context:
+        interface: {{ interface }}
+        interface_config: {{ config | json }}
+        private_key_file: {{ private_key }}
+
+"wireguard-config-file-interface-{{ interface }}-config-network":
+  file.managed:
+    - name: {{ wireguard.config }}/{{ interface }}.network
+    - source: {{ files_switch(['network.jinja'],
+                              lookup='wireguard-config-file-interface-{}-config'.format(interface)
+                 )
+              }}
+    - mode: 660
+    - user: root
+    - group: {{ wireguard.rootgroup }}
+    - makedirs: True
+    - template: jinja
+    - require:
+      - file: wireguard-config-file-config-dir
+      - sls: {{ sls_package_install }}
+    - context:
+        interface: {{ interface }}
         interface_config: {{ config | json }}
 {%- endfor %}
