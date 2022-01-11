@@ -11,6 +11,10 @@ Description = Salt managed {{ interface }}
 [WireGuard]
 # If running systemd >= 242
 PrivateKeyFile = {{ private_key_file }}
+{%- set listenPort = interface_config['Interface'].get('ListenPort', '') %}
+{%- if listenPort %}
+ListenPort={{ listenPort }}
+{%- endif %}
 
 # If running systemd < 242
 #PrivateKey = <content of local wg-private.key>

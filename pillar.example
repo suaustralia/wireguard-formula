@@ -63,7 +63,6 @@ wireguard:
         minion_id1:
           PublicKey: FSvVqj2s1FZqsSIvPLrE1RRTgbaPLbfG87P36F21M1g=
           AllowedIPs:
-            # Arrays are joined by a comma.
             - 10.0.45.0/24
             - 10.0.47.0/24
             # - 2001:db8:45::2/64
