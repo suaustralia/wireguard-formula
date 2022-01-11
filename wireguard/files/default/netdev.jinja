@@ -67,7 +67,7 @@ ListenPort={{ listenPort }}
 #PresharedKeyFile = /etc/systemd/network/wg-preshared.key
 # If running systemd < 242
 #PresharedKey = <content of wg-preshared.key>
-#PersistentKeepalive = 25
+PersistentKeepalive = 25
 {%-   for key, value in peer.items() %}
 {%-     if value|is_list %}
 {%-       set value = value|join(',') %}
