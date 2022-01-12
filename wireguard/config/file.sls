@@ -32,6 +32,10 @@ wireguard-config-file-interface-{{ interface }}-private-key:
     - creates: {{ private_key }}
     - require_in:
       - file: "wireguard-config-file-interface-{{ interface }}-config-netdev"
+  file.managed:
+    - name: {{ private_key }}
+    - group: systemd-network
+    - mode: '0640'
 
 wireguard-config-file-interface-{{ interface }}-public-key:
   cmd.run:
