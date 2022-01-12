@@ -52,6 +52,10 @@
 [Peer]
 # {{ peer_name }}
 {%-   for key, value in peer.items() %}
+{#-     # Don't print ClientOnlyNode which isn't a valid setting here #}
+{%-     if key == 'ClientOnlyNode' %}
+{%-       continue %}
+{%-     endif %}
 {%-     if value|is_list %}
 {%-       set value = value|join(',') %}
 {%-     endif %}
