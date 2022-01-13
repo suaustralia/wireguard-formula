@@ -66,5 +66,12 @@ Domains={{ interface_config['Interface'].get('Domains') }}
 Destination={{ route }}
 {% endfor %}
 
+{% for route in peer.get('SecondaryRoutes', []) %}
+[Route]
+# Higher metric route so we don't override existing routes
+Destination={{ route }}
+Metric=200
+{% endfor %}
+
 
 {%- endfor %}

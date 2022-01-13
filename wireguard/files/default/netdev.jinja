@@ -69,6 +69,13 @@ ListenPort={{ listenPort }}
 #PresharedKey = <content of wg-preshared.key>
 PersistentKeepalive = 25
 {%-   for key, value in peer.items() %}
+{#-     # Don't print ClientOnlyNode or SecondaryRoutes which isn't a valid setting here #}
+{%-     if key == 'ClientOnlyNode' or key == 'SecondaryRoutes' %}
+{%-       continue %}
+{%-     endif %}
+{%-     if key == 'AllowedIPs' and value|is_list %}
+{%-       set value = value + peer.get('SecondaryRoutes', []) %}
+{%-     endif %}
 {%-     if value|is_list %}
 {%-       set value = value|join(',') %}
 {%-     endif %}
