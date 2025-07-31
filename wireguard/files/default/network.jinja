@@ -6,6 +6,9 @@
 [Match]
 Name={{ interface }}
 
+[Link]
+MTUBytes=1376 # Set a lower MTU due to IPv6 issues
+
 [Network]
 {%- set clientAddress = interface_config['Interface'].get('Address', '') %}
 {%- if clientAddress %}
