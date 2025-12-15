@@ -7,7 +7,8 @@
 Name={{ interface }}
 
 [Link]
-MTUBytes=1376 # Set a lower MTU due to IPv6 issues
+# Set a lower MTU due to IPv6 issues
+MTUBytes=1376
 
 [Network]
 {%- set clientAddress = interface_config['Interface'].get('Address', '') %}
