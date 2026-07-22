@@ -73,6 +73,10 @@ PersistentKeepalive = 25
 {%-     if key == 'ClientOnlyNode' or key == 'SecondaryRoutes' %}
 {%-       continue %}
 {%-     endif %}
+{#-     # Don't print PrivateKey here #}
+{%-     if key == 'PrivateKey' %}
+{%-       continue %}
+{%-     endif %}
 {%-     if key == 'AllowedIPs' and value|is_list %}
 {%-       set value = value + peer.get('SecondaryRoutes', []) %}
 {%-     endif %}
